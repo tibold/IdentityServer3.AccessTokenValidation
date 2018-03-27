@@ -14,17 +14,16 @@
  * limitations under the License.
  */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using IdentityModel.Client;
 using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Infrastructure;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace IdentityServer3.AccessTokenValidation
 {
@@ -36,7 +35,7 @@ namespace IdentityServer3.AccessTokenValidation
 
         public IntrospectionEndpointTokenProvider(IdentityServerBearerTokenAuthenticationOptions options, ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.Create(this.GetType().FullName);
+            _logger = loggerFactory.Create(GetType().FullName);
 
             if (string.IsNullOrWhiteSpace(options.Authority))
             {
@@ -64,8 +63,8 @@ namespace IdentityServer3.AccessTokenValidation
             if (!string.IsNullOrEmpty(options.ClientId))
             {
                 _client = new IntrospectionClient(
-                    introspectionEndpoint, 
-                    options.ClientId, 
+                    introspectionEndpoint,
+                    options.ClientId,
                     options.ClientSecret,
                     handler);
             }
@@ -112,15 +111,8 @@ namespace IdentityServer3.AccessTokenValidation
                 return;
             }
 
-            var claims = new List<Claim>();
-            foreach (var claim in response.Claims)
-            {
-                if (!string.Equals(claim.Item1, "active", StringComparison.Ordinal))
-                {
-                    claims.Add(new Claim(claim.Item1, claim.Item2));
-                }
-            }
-            
+            var claims = response.Claims.Where(x => !string.Equals(x.Type, "active", StringComparison.Ordinal)).ToList();
+
             if (_options.EnableValidationResultCache)
             {
                 await _options.ValidationResultCache.AddAsync(context.Token, claims);

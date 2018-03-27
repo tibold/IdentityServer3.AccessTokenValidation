@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
+using System;
+using System.Linq;
+using System.Threading;
 using IdentityServer3.AccessTokenValidation;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Extensions;
 using Microsoft.Owin.Logging;
 using Microsoft.Owin.Security.Jwt;
 using Microsoft.Owin.Security.OAuth;
-using System;
-using System.IdentityModel.Tokens;
-using System.Linq;
-using System.Threading;
 
 namespace Owin
 {
@@ -39,8 +39,10 @@ namespace Owin
         /// <returns></returns>
         public static IAppBuilder UseIdentityServerBearerTokenAuthentication(this IAppBuilder app, IdentityServerBearerTokenAuthenticationOptions options)
         {
-            if (app == null) throw new ArgumentNullException("app");
-            if (options == null) throw new ArgumentNullException("options");
+            if (app == null)
+                throw new ArgumentNullException("app");
+            if (options == null)
+                throw new ArgumentNullException("options");
 
             var loggerFactory = app.GetLoggerFactory();
             var middlewareOptions = new IdentityServerOAuthBearerAuthenticationOptions();
@@ -106,7 +108,7 @@ namespace Owin
 
         private static Lazy<OAuthBearerAuthenticationOptions> ConfigureEndpointValidation(IdentityServerBearerTokenAuthenticationOptions options, ILoggerFactory loggerFactory)
         {
-            return new Lazy<OAuthBearerAuthenticationOptions>(() => 
+            return new Lazy<OAuthBearerAuthenticationOptions>(() =>
             {
                 if (options.EnableValidationResultCache)
                 {
@@ -139,7 +141,7 @@ namespace Owin
 
         internal static Lazy<OAuthBearerAuthenticationOptions> ConfigureLocalValidation(IdentityServerBearerTokenAuthenticationOptions options, ILoggerFactory loggerFactory)
         {
-            return new Lazy<OAuthBearerAuthenticationOptions>(() => 
+            return new Lazy<OAuthBearerAuthenticationOptions>(() =>
             {
                 JwtFormat tokenFormat = null;
 
@@ -154,7 +156,7 @@ namespace Owin
                     {
                         ValidIssuer = options.IssuerName,
                         ValidAudience = audience,
-                        IssuerSigningToken = new X509SecurityToken(options.SigningCertificate),
+                        IssuerSigningKey = new X509SecurityKey(options.SigningCertificate),
 
                         NameClaimType = options.NameClaimType,
                         RoleClaimType = options.RoleClaimType,
@@ -189,10 +191,10 @@ namespace Owin
                     {
                         valParams.IssuerSigningKeyResolver = options.IssuerSigningKeyResolver;
                     }
-                    else
-                    {
-                        valParams.IssuerSigningKeyResolver = ResolveRsaKeys;
-                    }
+                    //else
+                    //{
+                    //    valParams.IssuerSigningKeyResolver = ResolveRsaKeys;
+                    //}
 
                     tokenFormat = new JwtFormat(valParams, issuerProvider);
                 }
@@ -211,29 +213,9 @@ namespace Owin
             }, LazyThreadSafetyMode.PublicationOnly);
         }
 
-        private static SecurityKey ResolveRsaKeys(
-            string token, 
-            SecurityToken securityToken, 
-            SecurityKeyIdentifier keyIdentifier, 
-            TokenValidationParameters validationParameters)
-        {
-            string id = null;
-            foreach (var keyId in keyIdentifier)
-            {
-                var nk = keyId as NamedKeySecurityKeyIdentifierClause;
-                if (nk != null)
-                {
-                    id = nk.Id;
-                    break;
-                }
-            }
-
-            if (id == null) return null;
-
-            var issuerToken = validationParameters.IssuerSigningTokens.FirstOrDefault(it => it.Id == id);
-            if (issuerToken == null) return null;
-
-            return issuerToken.SecurityKeys.FirstOrDefault();
-        }
+        //private static IEnumerable<SecurityKey> ResolveRsaKeys(string token, SecurityToken securityToken, string keyIdentifier, TokenValidationParameters validationParameters)
+        //{
+        //    return validationParameters.IssuerSigningKeys.Where(it => it.KeyId == keyIdentifier);
+        //}
     }
 }

@@ -1,7 +1,6 @@
-﻿using IdentityModel;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography.X509Certificates;
@@ -50,7 +49,9 @@ namespace AccessTokenValidation.Tests.Util
                 scope.ToList().ForEach(s => additionalClaims.Add(new Claim("scope", s)));
             }
 
-            var credential = new X509SigningCredentials(signingCertificate ?? DefaultSigningCertificate);
+            var securityKey = new Microsoft.IdentityModel.Tokens.X509SecurityKey(signingCertificate ?? DefaultSigningCertificate);
+
+            var signingCredentials = new Microsoft.IdentityModel.Tokens.SigningCredentials(securityKey, "RS256");
 
             var token = new JwtSecurityToken(
                 issuer ?? DefaultIssuer,
@@ -58,17 +59,17 @@ namespace AccessTokenValidation.Tests.Util
                 additionalClaims,
                 DateTime.UtcNow,
                 DateTime.UtcNow.AddSeconds(ttl),
-                credential);
+                signingCredentials);
 
-            token.Header.Add(
-                "kid", Base64Url.Encode(credential.Certificate.GetCertHash()));
+            //token.Header.Add(
+            //    "kid", signingCredentials.Kid);
 
             return token;
         }
 
         public static string CreateTokenString(JwtSecurityToken token)
         {
-            JwtSecurityTokenHandler.OutboundClaimTypeMap = new Dictionary<string, string>();
+            JwtSecurityTokenHandler.DefaultOutboundClaimTypeMap = new Dictionary<string, string>();
 
             var handler = new JwtSecurityTokenHandler();
             return handler.WriteToken(token);

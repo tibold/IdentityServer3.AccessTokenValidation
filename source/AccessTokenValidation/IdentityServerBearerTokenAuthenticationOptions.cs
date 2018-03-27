@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.OAuth;
 using System;
@@ -84,7 +85,7 @@ namespace IdentityServer3.AccessTokenValidation
         /// <value>
         /// The backchannel HTTP handler.
         /// </value>
-		public HttpMessageHandler BackchannelHttpHandler { get; set; }
+        public HttpMessageHandler BackchannelHttpHandler { get; set; }
 
         /// <summary>
         /// Gets or sets the backchannel certificate validator.
@@ -182,7 +183,7 @@ namespace IdentityServer3.AccessTokenValidation
         /// <value>
         /// The introspection HTTP handler.
         /// </value>
-		public HttpMessageHandler IntrospectionHttpHandler { get; set; }
+        public HttpMessageHandler IntrospectionHttpHandler { get; set; }
 
         /// <summary>
         /// Indicates whether the discovery metadata sync to be delayed during the construction of

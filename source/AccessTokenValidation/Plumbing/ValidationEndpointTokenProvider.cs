@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-using IdentityModel.Extensions;
-using Microsoft.Owin.Logging;
-using Microsoft.Owin.Security;
-using Microsoft.Owin.Security.Infrastructure;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using IdentityModel;
+using Microsoft.Owin.Logging;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Infrastructure;
+using Newtonsoft.Json;
 
 namespace IdentityServer3.AccessTokenValidation
 {
@@ -37,7 +37,7 @@ namespace IdentityServer3.AccessTokenValidation
 
         public ValidationEndpointTokenProvider(IdentityServerBearerTokenAuthenticationOptions options, ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.Create(this.GetType().FullName);
+            _logger = loggerFactory.Create(GetType().FullName);
 
             if (string.IsNullOrWhiteSpace(options.Authority))
             {
@@ -56,7 +56,7 @@ namespace IdentityServer3.AccessTokenValidation
                 var webRequestHandler = handler as WebRequestHandler;
                 if (webRequestHandler == null)
                 {
-					throw new InvalidOperationException("The back channel handler must derive from WebRequestHandler in order to use a certificate validator");
+                    throw new InvalidOperationException("The back channel handler must derive from WebRequestHandler in order to use a certificate validator");
                 }
 
                 webRequestHandler.ServerCertificateValidationCallback = options.BackchannelCertificateValidator.Validate;

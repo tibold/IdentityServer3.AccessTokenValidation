@@ -24,7 +24,7 @@ task Clean {
 }
 
 task Compile -depends UpdateVersion {
-	exec { msbuild /nologo /verbosity:q $sln_file /p:Configuration=$target_config /p:TargetFrameworkVersion=v4.5 }
+	exec { msbuild /nologo /verbosity:q $sln_file /p:Configuration=$target_config /p:TargetFrameworkVersion=v4.6.2 }
 }
 
 task RunTests -depends Compile {
@@ -89,5 +89,5 @@ task CreateNuGetPackage -depends Compile {
 	copy-item $output_directory\IdentityServer3.AccessTokenValidation.* $dist_directory\lib\net45
 
 	copy-item $src_directory\IdentityServer3.AccessTokenValidation.nuspec $dist_directory
-	exec { . $nuget_path pack $dist_directory\IdentityServer3.AccessTokenValidation.nuspec -BasePath $dist_directory -o $dist_directory -version $packageVersion }
+	exec { . $nuget_path pack $dist_directory\IdentityServer3.AccessTokenValidation.nuspec -BasePath $dist_directory -o $dist_directory -symbols -version $packageVersion }
 }

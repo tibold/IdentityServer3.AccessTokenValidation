@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>IdentityServer3.AccessTokenValidation</id>
+    <id>IdentityServer3.AccessTokenValidation.Unofficial</id>
     <version>0.0.0</version>
     <title>IdentityServer3 - Access Token Validation</title>
-    <authors>Brock Allen, Dominick Baier</authors>
+    <authors>Tibold Kandrai</authors>
     <owners>Brock Allen, Dominick Baier</owners>
     <projectUrl>https://github.com/identityserver/IdentityServer3.AccessTokenValidation</projectUrl>
     <iconUrl>https://identityserver.github.io/Documentation/assets/images/icons/IDserver_icon128.jpg</iconUrl>
@@ -16,17 +16,16 @@
     
     <frameworkAssemblies>
       <frameworkAssembly assemblyName="System.Runtime.Caching"  />
-      <frameworkAssembly assemblyName="System.IdentityModel"  />
     </frameworkAssemblies>
 
     <dependencies>
       <dependency id="Owin" version="1.0"/>
-      <dependency id="Microsoft.Owin.Security.Jwt" version="3.0.1" />
-      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
-      <dependency id="IdentityModel" version="[1.9.2,2.0)" />
-      <dependency id="Newtonsoft.Json" version="8.0.3" />
-      <dependency id="Microsoft.IdentityModel.Protocol.Extensions" version="1.0.2.206221351" />
-      <dependency id="System.IdentityModel.Tokens.Jwt" version="4.0.2.206221351" />
+      <dependency id="Microsoft.Owin.Security.Jwt" version="4.0.0" />
+      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.4" />
+      <dependency id="IdentityModel" version="[3.3.1,4.0)" />
+      <dependency id="Newtonsoft.Json" version="11.0.2" />
+      <dependency id="Microsoft.IdentityModel.Protocols.OpenIdConnect" version="5.2.1" />
+      <dependency id="System.IdentityModel.Tokens.Jwt" version="5.2.1" />
     </dependencies>
   </metadata>
 </package>
